@@ -10,9 +10,9 @@ import java.time.LocalDate;
 @Setter
 @EqualsAndHashCode
 public class Film {
-    private int id;
-    String name;
-    String descriptions;
-    LocalDate releaseDate;
-    int durations;
+    private Integer id;
+    private String name;
+    private String descriptions;
+    private LocalDate releaseDate;
+    private int durations;
 }

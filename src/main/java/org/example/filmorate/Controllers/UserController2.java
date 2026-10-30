@@ -24,36 +24,37 @@ public class UserController2 {
 
     @PostMapping("/adduser")
     public User2 createdUser(@RequestBody User2 user2) {
-        if (user2 == null || user2.getEmail() == null || user2.getEmail().isEmpty()
-            || user2.getLogin() == null || user2.getLogin().isEmpty() || user2.getLogin().isBlank()
-            || user2.getBirthday() == null || user2.getBirthday().isAfter(LocalDate.now())) {
-            throw new RuntimeException("Ошибка");
-        }
-        if (user2.getName() == null || user2.getName().isEmpty() || user2.getName().isBlank()) {
-            user2.setName(user2.getLogin());
-        }
+        validateUser(user2);
+
         id++;
         user2.setId(id);
-        log.debug("Добавление User идет");
+        log.debug("Добавление User: id={}, login={}", user2.getId(), user2.getLogin());
         userHashMap.put(id, user2);
         return user2;
     }
 
     @PutMapping("/updateuser")
     public User2 updateUser(@RequestBody User2 user2){
-        if (user2.getId() <= 0 || !userHashMap.containsKey(user2.getId())) {
-            throw new RuntimeException("Пользователь с таким id не найден");
-        }
-        if (user2.getEmail() == null || user2.getEmail().isEmpty() || user2.getLogin() == null
-           || user2.getLogin().isEmpty() || user2.getLogin().isBlank()
-           || user2.getBirthday() == null || user2.getBirthday().isAfter(LocalDate.now())) {
+        if (user2 == null || user2.getId() == null || !userHashMap.containsKey(user2.getId())) {
             throw new RuntimeException("Ошибка");
         }
-        if (user2.getName() == null || user2.getName().isEmpty() || user2.getName().isBlank()) {
-            user2.setName(user2.getLogin());
-        }
-        log.debug("Обновление User идет");
+
+        validateUser(user2);
+
+        log.debug("Обновление User: id={}, login={}", user2.getId(), user2.getLogin());
         userHashMap.put(user2.getId(), user2);
         return user2;
+    }
+
+    private void validateUser(User2 user2) {
+        if (user2 == null || user2.getEmail() == null || user2.getEmail().isBlank()
+            || user2.getLogin() == null || user2.getLogin().isBlank()
+            || user2.getBirthday() == null || user2.getBirthday().isAfter(LocalDate.now())) {
+            throw new RuntimeException("Ошибка");
+        }
+
+        if (user2.getName() == null || user2.getName().isBlank()) {
+            user2.setName(user2.getLogin());
+        }
     }
 }

@@ -10,9 +10,9 @@ import java.time.LocalDate;
 @Setter
 @EqualsAndHashCode
 public class User2 {
-    private int id;
-    String email;
-    String login;
-    String name;
-    LocalDate birthday;
+    private Integer id;
+    private String email;
+    private String login;
+    private String name;
+    private LocalDate birthday;
 }

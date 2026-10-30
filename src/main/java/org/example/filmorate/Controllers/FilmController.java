@@ -16,6 +16,8 @@ public class FilmController {
     private final HashMap<Integer, Film> filmHashMap = new HashMap<>();
     private static final Logger log = LoggerFactory.getLogger(FilmController.class);
 
+    private static final LocalDate MIN_RELEASE_DATE = LocalDate.of(1895, 12, 28);
+
     @GetMapping("/allfilms")
     public List<Film> allFilms(){
         ArrayList<Film> list = new ArrayList<>(filmHashMap.values());
@@ -24,31 +26,34 @@ public class FilmController {
 
     @PostMapping("/addfilm")
     public Film createdFilm(@RequestBody Film film) {
-        if (film == null || film.getName() == null || film.getName().isEmpty()
-            || film.getReleaseDate() == null
-            || film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))
-            || film.getDurations() <= 0) {
-            throw new RuntimeException("Ошибка");
-        }
+        validateFilm(film);
+
         id++;
         film.setId(id);
-        log.debug("Добавление фильма идет");
+        log.debug("Добавление фильма: id={}, name={}", film.getId(), film.getName());
         filmHashMap.put(id, film);
         return film;
     }
 
     @PutMapping("/updatefilm")
     public Film updateFilm(@RequestBody Film film){
-        if (film.getId() <= 0 || !filmHashMap.containsKey(film.getId())) {
-            throw new RuntimeException("Фильм с таким id не найден");
+        if (film == null || film.getId() == null || !filmHashMap.containsKey(film.getId())) {
+            throw new RuntimeException("Ошибка");
         }
-        if (film.getName() == null || film.getName().isEmpty() || film.getReleaseDate() == null
-            || film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))
+
+        validateFilm(film);
+
+        log.debug("Добавление фильма: id={}, name={}", film.getId(), film.getName());
+        filmHashMap.put(film.getId(), film);
+        return film;
+    }
+
+    private void validateFilm(Film film) {
+        if (film == null || film.getName() == null || film.getName().isBlank()
+            || film.getReleaseDate() == null
+            || film.getReleaseDate().isBefore(MIN_RELEASE_DATE)
             || film.getDurations() <= 0) {
             throw new RuntimeException("Ошибка");
         }
-        log.debug("Обновление фильма идет");
-        filmHashMap.put(film.getId(), film);
-        return film;
     }
 }
