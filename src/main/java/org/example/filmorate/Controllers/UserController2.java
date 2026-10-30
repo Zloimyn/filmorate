@@ -5,17 +5,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 @RestController
 public class UserController2 {
+    private int id= 0;
     private final HashMap<Integer, User2> userHashMap = new HashMap<>();
     private static final Logger log = LoggerFactory.getLogger(UserController2.class);
 
     @GetMapping("/allusers")
     public List<User2> allUsers(){
-        return (List<User2>) userHashMap.values();
+        ArrayList<User2> list = new ArrayList<>(userHashMap.values());
+        return list;
     }
 
     @PostMapping("/adduser")
@@ -25,20 +28,25 @@ public class UserController2 {
         } else if (user2.getName().isEmpty() || user2.getName().isBlank()) {
             user2.setName(user2.getLogin());
         }
+        id++;
+        user2.setId(id);
         log.debug("Добавление User идет");
-        userHashMap.put(user2.hashCode(), user2);
+        userHashMap.put(id, user2);
         return user2;
     }
 
     @PutMapping("/updateuser")
     public User2 updateUser(@RequestBody User2 user2){
+        if (user2.getId() <= 0 || !userHashMap.containsKey(user2.getId())) {
+            throw new RuntimeException("Пользователь с таким id не найден");
+        }
         if (user2.getEmail().isEmpty() || user2.getLogin().isEmpty() || user2.getLogin().isBlank() || user2.getBirthday() > 2026){
             throw new RuntimeException("Ошибка");
         } else if (user2.getName().isEmpty() || user2.getName().isBlank()) {
             user2.setName(user2.getLogin());
         }
         log.debug("Обновление User идет");
-        userHashMap.put(user2.hashCode(), user2);
+        userHashMap.put(user2.getId(), user2);
         return user2;
     }
 }
