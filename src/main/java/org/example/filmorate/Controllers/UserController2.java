@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,9 +24,12 @@ public class UserController2 {
 
     @PostMapping("/adduser")
     public User2 createdUser(@RequestBody User2 user2) {
-        if (user2.getEmail().isEmpty() || user2.getLogin().isEmpty() || user2.getLogin().isBlank() || user2.getBirthday() > 2026){
+        if (user2 == null || user2.getEmail() == null || user2.getEmail().isEmpty()
+            || user2.getLogin() == null || user2.getLogin().isEmpty() || user2.getLogin().isBlank()
+            || user2.getBirthday() == null || user2.getBirthday().isAfter(LocalDate.now())) {
             throw new RuntimeException("Ошибка");
-        } else if (user2.getName().isEmpty() || user2.getName().isBlank()) {
+        }
+        if (user2.getName() == null || user2.getName().isEmpty() || user2.getName().isBlank()) {
             user2.setName(user2.getLogin());
         }
         id++;
@@ -40,9 +44,12 @@ public class UserController2 {
         if (user2.getId() <= 0 || !userHashMap.containsKey(user2.getId())) {
             throw new RuntimeException("Пользователь с таким id не найден");
         }
-        if (user2.getEmail().isEmpty() || user2.getLogin().isEmpty() || user2.getLogin().isBlank() || user2.getBirthday() > 2026){
+        if (user2.getEmail() == null || user2.getEmail().isEmpty() || user2.getLogin() == null
+           || user2.getLogin().isEmpty() || user2.getLogin().isBlank()
+           || user2.getBirthday() == null || user2.getBirthday().isAfter(LocalDate.now())) {
             throw new RuntimeException("Ошибка");
-        } else if (user2.getName().isEmpty() || user2.getName().isBlank()) {
+        }
+        if (user2.getName() == null || user2.getName().isEmpty() || user2.getName().isBlank()) {
             user2.setName(user2.getLogin());
         }
         log.debug("Обновление User идет");

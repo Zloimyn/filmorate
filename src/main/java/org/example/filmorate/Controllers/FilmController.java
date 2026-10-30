@@ -1,11 +1,11 @@
 package org.example.filmorate.Controllers;
 
 import org.example.filmorate.models.Film;
-import org.example.filmorate.models.User2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +24,10 @@ public class FilmController {
 
     @PostMapping("/addfilm")
     public Film createdFilm(@RequestBody Film film) {
-        if (film.getReleaseDate() < 1985 || film.getDurations() < 0 || film.getName().isEmpty()){
+        if (film == null || film.getName() == null || film.getName().isEmpty()
+            || film.getReleaseDate() == null
+            || film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))
+            || film.getDurations() <= 0) {
             throw new RuntimeException("Ошибка");
         }
         id++;
@@ -39,7 +42,9 @@ public class FilmController {
         if (film.getId() <= 0 || !filmHashMap.containsKey(film.getId())) {
             throw new RuntimeException("Фильм с таким id не найден");
         }
-        if (film.getReleaseDate() < 1985 || film.getDurations() < 0 || film.getName().isEmpty()){
+        if (film.getName() == null || film.getName().isEmpty() || film.getReleaseDate() == null
+            || film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))
+            || film.getDurations() <= 0) {
             throw new RuntimeException("Ошибка");
         }
         log.debug("Обновление фильма идет");
