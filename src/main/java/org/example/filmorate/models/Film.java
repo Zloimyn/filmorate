@@ -8,11 +8,11 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(of = "id")
 public class Film {
     private Integer id;
     private String name;
-    private String descriptions;
+    private String description;
     private LocalDate releaseDate;
-    private int durations;
+    private int duration;
 }
