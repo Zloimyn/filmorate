@@ -28,11 +28,7 @@ public class FilmController {
     }
 
     @PostMapping
-    public Film createdFilm(@RequestBody(required = false) Film film) {
-        if (film == null) {
-            log.error("Ошибка: передан пустой запрос на добавление фильма");
-            throw new ValidationException("Запрос не может быть пустым");
-        }
+    public Film createdFilm(@RequestBody Film film) {
         validateFilm(film);
 
         id++;
@@ -43,13 +39,9 @@ public class FilmController {
     }
 
     @PutMapping
-    public Film updateFilm(@RequestBody(required = false) Film film) {
-        if (film == null) {
-            log.error("Ошибка при обновлении фильма: пустой запрос");
-            throw new ValidationException("Запрос не может быть пустым");
-        }
+    public Film updateFilm(@RequestBody Film film) {
         if (film.getId() == null || !filmHashMap.containsKey(film.getId())) {
-            log.error("Ошибка при обновлении фильма: фильм с id={} не найден", film.getId());
+            log.warn("Ошибка при обновлении фильма: фильм с id={} не найден", film.getId());
             throw new NotFoundException("Фильм с таким id не найден");
         }
 
@@ -62,19 +54,19 @@ public class FilmController {
 
     private void validateFilm(Film film) {
         if (film.getName() == null || film.getName().isBlank()) {
-            log.error("Ошибка: название фильма пустое");
+            log.warn("Ошибка: название фильма пустое");
             throw new ValidationException("Название фильма не может быть пустым");
         }
         if (film.getDescription() != null && film.getDescription().length() > MAX_DESCRIPTION_LENGTH) {
-            log.error("Ошибка: длина описания превышает 200 символов");
-            throw new ValidationException("Максимальная длина описания — 200 символов");
+            log.warn("Ошибка: длина описания превышает 200 символов");
+            throw new ValidationException("Максимальная длина описания - 200 символов");
         }
         if (film.getReleaseDate() == null || film.getReleaseDate().isBefore(MIN_RELEASE_DATE)) {
-            log.error("Ошибка даты релиза: {}", film.getReleaseDate());
+            log.warn("Ошибка даты релиза: {}", film.getReleaseDate());
             throw new ValidationException("Дата релиза не может быть раньше 28 декабря 1895 года");
         }
         if (film.getDuration() <= 0) {
-            log.error("Ошибка продолжительности: {}", film.getDuration());
+            log.warn("Ошибка продолжительности: {}", film.getDuration());
             throw new ValidationException("Продолжительность фильма должна быть положительной");
         }
     }
