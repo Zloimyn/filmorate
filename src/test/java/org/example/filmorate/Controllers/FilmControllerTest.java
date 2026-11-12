@@ -47,12 +47,17 @@ class FilmControllerTest {
         film.setDuration(120);
         Film created = filmController.createdFilm(film);
 
-        created.setName("Интерстеллар Обновленный");
-        created.setDuration(150);
-        Film updated = filmController.updateFilm(created);
+        Film updatedFilm = new Film();
+        updatedFilm.setId(created.getId());
+        updatedFilm.setName("Интерстеллар Обновленный");
+        updatedFilm.setDescription("Хороший фильм");
+        updatedFilm.setReleaseDate(LocalDate.of(2000, 1, 1));
+        updatedFilm.setDuration(150);
+        filmController.updateFilm(updatedFilm);
 
-        assertEquals("Интерстеллар Обновленный", updated.getName());
-        assertEquals(150, updated.getDuration());
+        Film stored = filmController.allFilms().get(0);
+        assertEquals("Интерстеллар Обновленный", stored.getName());
+        assertEquals(150, stored.getDuration());
     }
 
     @Test

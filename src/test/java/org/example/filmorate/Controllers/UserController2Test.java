@@ -58,12 +58,17 @@ class UserController2Test {
         user.setBirthday(LocalDate.of(1995, 5, 12));
         User2 created = userController.createdUser(user);
 
-        created.setLogin("updatedLogin");
-        created.setName("Updated Name");
-        User2 updated = userController.updateUser(created);
+        User2 updatedUser = new User2();
+        updatedUser.setId(created.getId());
+        updatedUser.setEmail("test@mail.com");
+        updatedUser.setLogin("updatedLogin");
+        updatedUser.setName("Updated Name");
+        updatedUser.setBirthday(LocalDate.of(1995, 5, 12));
+        userController.updateUser(updatedUser);
 
-        assertEquals("updatedLogin", updated.getLogin());
-        assertEquals("Updated Name", updated.getName());
+        User2 stored = userController.allUsers().get(0);
+        assertEquals("updatedLogin", stored.getLogin());
+        assertEquals("Updated Name", stored.getName());
     }
 
     @Test
